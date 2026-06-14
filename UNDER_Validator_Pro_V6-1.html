@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNDER Validator Pro V6</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #FFD700;
+  --gold-dim: rgba(255,215,0,0.15);
+  --green: #00FF88;
+  --blue: #4af;
+  --red: #FF4444;
+  --orange: #FF9500;
+  --bg: #080b10;
+  --card: rgba(255,255,255,0.032);
+  --border: rgba(255,215,0,0.13);
+  --text: #e8e8e8;
+  --muted: #555;
+}
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 600px 400px at 80% -10%, rgba(255,215,0,0.035) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at -10% 80%, rgba(0,120,255,0.025) 0%, transparent 70%);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  color: var(--text);
+  padding-bottom: 60px;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes glowPulse { 0%,100% { text-shadow: 0 0 12px currentColor; } 50% { text-shadow: 0 0 28px currentColor, 0 0 50px currentColor; } }
+@keyframes btnPulse { 0%,100% { box-shadow: 0 4px 24px rgba(255,215,0,0.28); } 50% { box-shadow: 0 4px 40px rgba(255,215,0,0.55); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes barFill { from { width: 0; } }
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 32px 20px 20px;
+  animation: fadeUp 0.5s ease;
+}
+.header .eyebrow {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  line-height: 0.9;
+  animation: glowPulse 3.5s ease infinite;
+}
+.header h1 span { color: #fff; font-size: 26px; display: block; letter-spacing: 3px; }
+.header .v-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.35);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 10px; color: var(--green);
+  letter-spacing: 3px; margin-top: 10px;
+}
+.header .v-badge::before { content:''; width:6px; height:6px; background:var(--green); border-radius:50%; animation: glowPulse 2s ease infinite; }
+.divider { height: 1px; width: 50px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 10px auto 0; }
+
+/* ── TABS ── */
+.wrapper { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+.tab-nav {
+  display: flex; gap: 6px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 16px;
+}
+.tab-btn {
+  flex: 1; padding: 9px 4px;
+  border: none; border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.22s;
+  line-height: 1.2;
+}
+.tab-btn.active {
+  color: #000;
+  font-weight: 700;
+}
+.tab-btn[data-tab="under"] { }
+.tab-btn[data-tab="under"].active { background: var(--gold); }
+.tab-btn[data-tab="ht"].active { background: #7C6FFF; color: #fff; }
+.tab-btn[data-tab="btts"].active { background: var(--green); }
+
+.tab-panel { display: none; animation: fadeUp 0.35s ease; }
+.tab-panel.active { display: block; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 16px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; letter-spacing: 3px;
+  color: var(--gold); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title small { font-size: 10px; color: var(--muted); letter-spacing: 1px; font-family: 'DM Sans'; }
+
+/* ── INSTRUCTION ── */
+.instr {
+  background: rgba(0,150,255,0.06);
+  border: 1px solid rgba(0,150,255,0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-size: 12px; color: #aaa;
+}
+.instr strong { color: var(--gold); font-family: 'Bebas Neue'; font-size: 14px; }
+.instr-rows { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+.instr-ex { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); border-radius: 6px; padding: 2px 9px; font-family: 'Bebas Neue'; font-size: 13px; color: var(--gold); }
+
+/* ── TEAM ── */
+.team-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px; letter-spacing: 2px; color: var(--gold);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.team-sub { font-size: 10px; color: var(--muted); font-family: 'DM Sans'; }
+
+.match-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.025);
+  border-radius: 10px; padding: 7px 12px;
+  transition: border 0.2s;
+  border: 1px solid transparent;
+}
+.match-row.has-error { border-color: rgba(255,68,68,0.5); }
+.match-row.has-warn { border-color: rgba(255,149,0,0.4); }
+
+.mnum { color: var(--muted); font-size: 11px; width: 16px; text-align: center; flex-shrink: 0; }
+.mscore { flex: 1; }
+.mscore input {
+  background: transparent; border: none;
+  border-bottom: 1px solid rgba(255,215,0,0.25);
+  color: #fff; padding: 4px 0; width: 100%;
+  font-size: 16px; outline: none;
+  font-family: 'Bebas Neue'; letter-spacing: 1px; text-align: center;
+  transition: border-color 0.2s;
+}
+.mscore input:focus { border-bottom-color: var(--gold); }
+.mscore input.input-error { border-bottom-color: var(--red); }
+.mscore .err-msg { font-size: 10px; color: var(--red); margin-top: 2px; display: none; }
+.mscore .err-msg.show { display: block; }
+
+.mwarn { font-size: 13px; width: 20px; text-align: center; flex-shrink: 0; }
+.mtag { font-size: 9px; width: 38px; text-align: right; flex-shrink: 0; color: transparent; }
+.mtag.recent { color: var(--gold); }
+.mtag.old { color: #444; }
+
+/* Charts */
+.mini-chart { margin: 10px 0 4px; }
+.mini-chart-title { font-size: 10px; color: var(--muted); margin-bottom: 5px; letter-spacing: 1px; }
+.bars-row { display: flex; align-items: flex-end; gap: 4px; height: 40px; }
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.bar { width: 100%; border-radius: 3px 3px 0 0; transition: height 0.6s ease; min-height: 2px; }
+.bar-val { font-size: 9px; color: #666; }
+
+.team-separator { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,215,0,0.12), transparent); margin: 14px 0; }
+
+/* ── RISK BOX ── */
+.risk-box {
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 12px; font-weight: 500;
+  margin-top: 6px; display: none;
+  text-align: center;
+}
+
+/* ── STD DEV ── */
+.vol-row {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.025); border-radius: 8px;
+  padding: 7px 12px; margin-top: 6px; display: none;
+}
+.vol-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.vol-text { font-size: 11px; color: #aaa; }
+
+/* ── SELECTS ── */
+.field-label { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; color: var(--gold); display: block; margin-bottom: 6px; margin-top: 12px; }
+.field-label:first-child { margin-top: 0; }
+select {
+  width: 100%; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,215,0,0.25);
+  border-radius: 8px; color: #fff;
+  padding: 10px 14px; font-size: 13px;
+  font-family: 'DM Sans'; outline: none;
+  -webkit-appearance: none;
+}
+select option { background: #1a1a2e; color: #fff; }
+
+/* ── LINE BUTTONS ── */
+.line-group { display: flex; gap: 8px; margin-top: 0; }
+.line-btn {
+  flex: 1; padding: 10px 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: #777; font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px; cursor: pointer; transition: all 0.2s;
+}
+.line-btn.sel { border: 2px solid var(--gold); color: var(--gold); background: rgba(255,215,0,0.12); }
+.line-btn-ht.sel { border: 2px solid #7C6FFF; color: #7C6FFF; background: rgba(124,111,255,0.12); }
+.line-btn-btts.sel { border: 2px solid var(--green); color: var(--green); background: rgba(0,255,136,0.1); }
+
+/* ── ANALYSE BTN ── */
+.calc-btn {
+  width: 100%; padding: 16px;
+  border: none; border-radius: 12px;
+  color: #000; font-family: 'Bebas Neue', sans-serif;
+  font-size: 21px; letter-spacing: 3px;
+  cursor: pointer; transition: transform 0.1s;
+  animation: btnPulse 2.2s ease infinite;
+  margin-bottom: 16px;
+}
+.calc-btn:active { transform: scale(0.98); }
+.calc-btn.under-btn { background: linear-gradient(135deg, var(--gold), #FF9500); }
+.calc-btn.ht-btn { background: linear-gradient(135deg, #7C6FFF, #5A8FFF); color: #fff; }
+.calc-btn.btts-btn { background: linear-gradient(135deg, #00FF88, #00C865); }
+
+/* ── RESULTS ── */
+.result-card {
+  background: var(--card);
+  border-radius: 16px; padding: 22px 18px;
+  animation: fadeUp 0.45s ease;
+  display: none; text-align: center;
+  margin-bottom: 14px;
+}
+
+.verdict {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 2px;
+  animation: glowPulse 2s ease infinite;
+  margin-bottom: 6px;
+}
+.conf-wrap { margin: 10px 0 16px; }
+.conf-label { font-size: 10px; color: #555; margin-bottom: 5px; display: flex; justify-content: space-between; }
+.conf-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+.conf-fill { height: 100%; border-radius: 3px; transition: width 0.9s ease; animation: barFill 0.9s ease; }
+
+/* volatility warning */
+.vol-banner {
+  background: rgba(255,149,0,0.08);
+  border: 1px solid rgba(255,149,0,0.3);
+  border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 12px; text-align: left; display: none;
+}
+.vol-banner-t { font-family: 'Bebas Neue'; font-size: 13px; color: var(--orange); letter-spacing: 2px; margin-bottom: 4px; }
+
+/* over risk banner */
+.over-banner {
+  background: rgba(255,68,68,0.09);
+  border: 1px solid rgba(255,68,68,0.4);
+  border-radius: 10px; padding: 12px 14px;
+  margin-bottom: 12px; text-align: left; display: none;
+}
+.over-banner-t { font-family: 'Bebas Neue'; font-size: 14px; color: var(--red); letter-spacing: 2px; margin-bottom: 6px; }
+.over-item { font-size: 12px; color: #ffaaaa; margin-bottom: 3px; }
+
+/* context badge */
+.ctx-badge {
+  display: inline-block; border-radius: 6px; padding: 3px 10px;
+  font-size: 11px; margin-bottom: 12px;
+}
+
+/* stats grid */
+.avgs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.avg-box { border-radius: 10px; padding: 10px 12px; text-align: center; background: rgba(255,255,255,0.04); }
+.avg-box .al { font-size: 10px; color: #777; margin-bottom: 4px; }
+.avg-box .av { font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 1px; }
+.avg-box .as { font-size: 9px; color: #555; margin-top: 2px; }
+
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.stat-box { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 8px; }
+.stat-box .sl { font-size: 10px; color: #666; margin-bottom: 3px; }
+.stat-box .sv { font-family: 'Bebas Neue'; font-size: 17px; color: #fff; }
+
+.line-sum {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px; padding: 12px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.line-sum .ls1 { color: #777; font-size: 12px; }
+.line-sum .ls2 { font-family: 'Bebas Neue'; font-size: 20px; color: var(--gold); }
+
+.alerts-box {
+  background: rgba(255,149,0,0.06);
+  border: 1px solid rgba(255,149,0,0.25);
+  border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 12px; text-align: left; display: none;
+}
+.alerts-t { font-size: 10px; color: var(--orange); letter-spacing: 2px; font-weight: 600; margin-bottom: 6px; }
+.alert-item { font-size: 12px; color: #ccc; margin-bottom: 3px; }
+
+/* scenario under */
+.scenario-box {
+  border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 12px; display: none; text-align: left;
+}
+.scenario-t { font-family: 'Bebas Neue'; font-size: 12px; letter-spacing: 2px; margin-bottom: 4px; }
+.scenario-desc { font-size: 12px; color: #ccc; }
+
+.method-info {
+  background: rgba(0,150,255,0.04);
+  border: 1px solid rgba(0,150,255,0.12);
+  border-radius: 10px; padding: 12px 14px;
+  margin-top: 10px; text-align: left;
+}
+.method-t { font-size: 10px; color: var(--blue); letter-spacing: 2px; margin-bottom: 6px; }
+.method-item { font-size: 11px; color: #777; margin-bottom: 3px; }
+
+.reset-btn {
+  width: 100%; padding: 10px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; color: #555; font-size: 13px;
+  cursor: pointer; font-family: 'DM Sans'; margin-top: 12px;
+  transition: all 0.2s;
+}
+.reset-btn:hover { border-color: rgba(255,255,255,0.25); color: #888; }
+
+/* ── BTTS SPECIFIC ── */
+.btts-prob {
+  font-family: 'Bebas Neue'; font-size: 48px;
+  letter-spacing: 2px; animation: glowPulse 2s ease infinite;
+  margin: 4px 0;
+}
+.btts-sub { font-size: 11px; color: #666; margin-bottom: 12px; }
+.btts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.btts-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; text-align: center; }
+.btts-item .bil { font-size: 10px; color: #666; margin-bottom: 4px; }
+.btts-item .biv { font-family: 'Bebas Neue'; font-size: 18px; }
+
+/* ── HISTORY ── */
+.history-section { margin-bottom: 14px; }
+.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.history-title { font-family: 'Bebas Neue'; font-size: 14px; letter-spacing: 3px; color: var(--gold); }
+.history-clear { font-size: 11px; color: var(--muted); background: none; border: none; cursor: pointer; color: #555; font-family: 'DM Sans'; }
+.history-empty { text-align: center; padding: 16px; color: #444; font-size: 12px; }
+.history-item {
+  background: rgba(255,255,255,0.025);
+  border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 8px; display: flex;
+  justify-content: space-between; align-items: center;
+  border-left: 3px solid transparent;
+  animation: fadeUp 0.3s ease;
+}
+.hi-left .hi-match { font-size: 12px; color: #ccc; margin-bottom: 2px; }
+.hi-left .hi-market { font-size: 10px; color: #555; }
+.hi-right .hi-verdict { font-family: 'Bebas Neue'; font-size: 14px; letter-spacing: 1px; }
+.hi-right .hi-conf { font-size: 10px; color: #555; margin-top: 1px; text-align: right; }
+
+/* ── MATCH TYPE BADGE ── */
+.type-friendly { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.25); border-radius: 6px; padding: 2px 8px; font-size: 10px; color: var(--green); letter-spacing: 1px; }
+.type-official { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.25); border-radius: 6px; padding: 2px 8px; font-size: 10px; color: var(--gold); letter-spacing: 1px; }
+.type-derby { background: rgba(255,68,68,0.08); border: 1px solid rgba(255,68,68,0.25); border-radius: 6px; padding: 2px 8px; font-size: 10px; color: var(--red); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">Football Analytics Tool</div>
+  <h1>UNDER<span>VALIDATOR PRO</span></h1>
+  <div class="v-badge">V6 — MULTI-MARCHÉS</div>
+  <div class="divider"></div>
+</div>
+
+<div class="wrapper">
+
+  <!-- TAB NAV -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="under" onclick="switchTab('under')">⚡ UNDER<br>CLASSIQUE</button>
+    <button class="tab-btn" data-tab="ht" onclick="switchTab('ht')">🔵 UNDER 1.5<br>1ère MT</button>
+    <button class="tab-btn" data-tab="btts" onclick="switchTab('btts')">🎯 LES DEUX<br>MARQUENT</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- TAB 1 — UNDER CLASSIQUE           -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-under">
+
+    <div class="instr">
+      <strong>📖 SAISIE DES SCORES</strong>
+      <div class="instr-rows">
+        <span><span class="instr-ex">2-1</span> → entre <b style="color:var(--gold)">3</b></span>
+        <span><span class="instr-ex">0-0</span> → entre <b style="color:var(--gold)">0</b></span>
+        <span><span class="instr-ex">4-1</span> → entre <b style="color:var(--gold)">5</b></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="team-label" id="uLabelA">⚽ <span>ÉQUIPE A</span> <span class="team-sub">5 derniers matchs</span></div>
+      <div id="uRowsA"></div>
+      <div class="risk-box" id="uRiskA"></div>
+      <div class="vol-row" id="uVolA"><div class="vol-dot" id="uVolDotA"></div><div class="vol-text" id="uVolTextA"></div></div>
+      <div class="mini-chart" id="uChartA" style="display:none">
+        <div class="mini-chart-title">RÉGULARITÉ</div>
+        <div class="bars-row" id="uBarsA"></div>
+      </div>
+
+      <div class="team-separator"></div>
+
+      <div class="team-label" id="uLabelB">⚽ <span>ÉQUIPE B</span> <span class="team-sub">5 derniers matchs</span></div>
+      <div id="uRowsB"></div>
+      <div class="risk-box" id="uRiskB"></div>
+      <div class="vol-row" id="uVolB"><div class="vol-dot" id="uVolDotB"></div><div class="vol-text" id="uVolTextB"></div></div>
+      <div class="mini-chart" id="uChartB" style="display:none">
+        <div class="mini-chart-title">RÉGULARITÉ</div>
+        <div class="bars-row" id="uBarsB"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label class="field-label">🗂️ TYPE DE MATCH</label>
+      <select id="uType">
+        <option value="friendly">Match amical</option>
+        <option value="league" selected>Championnat</option>
+        <option value="derby">Derby / Rivalité</option>
+        <option value="cup">Coupe / Finale</option>
+        <option value="relegation">Match de relégation</option>
+        <option value="worldcup">Coupe du Monde</option>
+      </select>
+
+      <label class="field-label">🏟️ LIEU</label>
+      <select id="uLieu">
+        <option value="0.2">Domicile (Équipe A)</option>
+        <option value="0" selected>Terrain neutre</option>
+        <option value="-0.1">Extérieur (Équipe A)</option>
+      </select>
+
+      <label class="field-label">⚖️ NIVEAU ADVERSAIRES</label>
+      <select id="uNiveau">
+        <option value="0">Niveau similaire</option>
+        <option value="-0.5">Adversaires très faibles</option>
+        <option value="0.3">Adversaires tous forts</option>
+      </select>
+
+      <label class="field-label">📊 LIGNE UNDER</label>
+      <div class="line-group">
+        <button class="line-btn" data-line="1.5" onclick="uSelectLine(this)">1.5</button>
+        <button class="line-btn" data-line="2.5" onclick="uSelectLine(this)">2.5</button>
+        <button class="line-btn" data-line="3.5" onclick="uSelectLine(this)">3.5</button>
+        <button class="line-btn" data-line="4.5" onclick="uSelectLine(this)">4.5</button>
+      </div>
+    </div>
+
+    <button class="calc-btn under-btn" onclick="calcUnder()">⚡ ANALYSER LE MATCH</button>
+
+    <!-- RESULT UNDER -->
+    <div class="result-card" id="uResult">
+      <div class="ctx-badge" id="uCtxBadge"></div>
+      <div class="verdict" id="uVerdict"></div>
+      <div class="conf-wrap">
+        <div class="conf-label"><span>Confiance</span><span id="uConfPct">—</span></div>
+        <div class="conf-bar"><div class="conf-fill" id="uConfFill" style="width:0%"></div></div>
+      </div>
+
+      <div class="scenario-box" id="uScenario">
+        <div class="scenario-t" id="uScenarioT"></div>
+        <div class="scenario-desc" id="uScenarioD"></div>
+      </div>
+
+      <div class="vol-banner" id="uVolBanner">
+        <div class="vol-banner-t">📉 VOLATILITÉ ÉLEVÉE</div>
+        <div id="uVolBannerText" style="font-size:12px;color:#ccc;"></div>
+      </div>
+
+      <div class="over-banner" id="uOverBanner">
+        <div class="over-banner-t">🚨 RISQUE OVER DÉTECTÉ</div>
+        <div id="uOverList"></div>
+      </div>
+
+      <div class="avgs-row">
+        <div class="avg-box" id="uBoxA">
+          <div class="al">Moy. Équipe A</div>
+          <div class="av" id="uAvgA">—</div>
+          <div class="as">buts/match</div>
+        </div>
+        <div class="avg-box" id="uBoxB">
+          <div class="al">Moy. Équipe B</div>
+          <div class="av" id="uAvgB">—</div>
+          <div class="as">buts/match</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box"><div class="sl">Moy. combinée</div><div class="sv" id="uBase">—</div></div>
+        <div class="stat-box"><div class="sl">Total ajusté</div><div class="sv" id="uAdjusted">—</div></div>
+        <div class="stat-box"><div class="sl">Volatilité A</div><div class="sv" id="uStdA">—</div></div>
+        <div class="stat-box"><div class="sl">Volatilité B</div><div class="sv" id="uStdB">—</div></div>
+      </div>
+
+      <div class="line-sum">
+        <span class="ls1">Ligne</span>
+        <span class="ls2" id="uLineSummary">UNDER 2.5</span>
+        <span id="uMarge" style="font-size:12px;font-weight:500;">—</span>
+      </div>
+
+      <div class="alerts-box" id="uAlerts">
+        <div class="alerts-t">⚠️ ALERTES</div>
+        <div id="uAlertsList"></div>
+      </div>
+
+      <div class="method-info">
+        <div class="method-t">🔬 MÉTHODE V6</div>
+        <div class="method-item">✅ Total buts direct (pas de confusion scores)</div>
+        <div class="method-item">✅ Pondération récente ×1.5 / ancienne ×0.7</div>
+        <div class="method-item">✅ Modèle marqués+encaissés si disponible</div>
+        <div class="method-item">✅ Écart-type = détection matchs irréguliers</div>
+        <div class="method-item">✅ Bonus/Alerte scénario under/over</div>
+        <div class="method-item">✅ Contexte match détecté (amical/derby…)</div>
+      </div>
+      <button class="reset-btn" onclick="resetUnder()">↺ Réinitialiser</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- TAB 2 — UNDER 1.5 1ère MT        -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-ht">
+
+    <div class="instr" style="border-color:rgba(124,111,255,0.3);background:rgba(124,111,255,0.05);">
+      <strong style="color:#7C6FFF">📖 BUTS EN 1ère MI-TEMPS</strong>
+      <div style="margin-top:6px;font-size:12px;color:#aaa;">Entre le total de buts marqués en 1ère mi-temps uniquement pour chaque match.</div>
+      <div class="instr-rows" style="margin-top:6px;">
+        <span><span class="instr-ex" style="color:#7C6FFF;border-color:rgba(124,111,255,0.3);">1-0</span> → entre <b style="color:#7C6FFF">1</b></span>
+        <span><span class="instr-ex" style="color:#7C6FFF;border-color:rgba(124,111,255,0.3);">0-0</span> → entre <b style="color:#7C6FFF">0</b></span>
+        <span><span class="instr-ex" style="color:#7C6FFF;border-color:rgba(124,111,255,0.3);">2-1</span> → entre <b style="color:#7C6FFF">3</b></span>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:rgba(124,111,255,0.2);">
+      <div class="team-label" style="color:#7C6FFF" id="htLabelA">🔵 <span>ÉQUIPE A</span> <span class="team-sub">buts 1ère MT — 5 matchs</span></div>
+      <div id="htRowsA"></div>
+      <div class="risk-box" id="htRiskA"></div>
+      <div class="mini-chart" id="htChartA" style="display:none">
+        <div class="mini-chart-title">1ère MI-TEMPS</div>
+        <div class="bars-row" id="htBarsA"></div>
+      </div>
+
+      <div class="team-separator" style="background:linear-gradient(90deg,transparent,rgba(124,111,255,0.15),transparent);"></div>
+
+      <div class="team-label" style="color:#7C6FFF" id="htLabelB">🔵 <span>ÉQUIPE B</span> <span class="team-sub">buts 1ère MT — 5 matchs</span></div>
+      <div id="htRowsB"></div>
+      <div class="risk-box" id="htRiskB"></div>
+      <div class="mini-chart" id="htChartB" style="display:none">
+        <div class="mini-chart-title">1ère MI-TEMPS</div>
+        <div class="bars-row" id="htBarsB"></div>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:rgba(124,111,255,0.2);">
+      <label class="field-label" style="color:#7C6FFF">🗂️ TYPE DE MATCH</label>
+      <select id="htType">
+        <option value="friendly">Match amical</option>
+        <option value="league" selected>Championnat</option>
+        <option value="derby">Derby / Rivalité</option>
+        <option value="cup">Coupe / Finale</option>
+        <option value="relegation">Match de relégation</option>
+      </select>
+      <label class="field-label" style="color:#7C6FFF">🏟️ LIEU</label>
+      <select id="htLieu">
+        <option value="0.1">Domicile (Équipe A)</option>
+        <option value="0" selected>Terrain neutre</option>
+        <option value="-0.05">Extérieur (Équipe A)</option>
+      </select>
+      <label class="field-label" style="color:#7C6FFF">📊 LIGNE UNDER 1ère MT</label>
+      <div class="line-group">
+        <button class="line-btn line-btn-ht" data-line="0.5" onclick="htSelectLine(this)">0.5</button>
+        <button class="line-btn line-btn-ht" data-line="1.5" onclick="htSelectLine(this)">1.5</button>
+        <button class="line-btn line-btn-ht" data-line="2.5" onclick="htSelectLine(this)">2.5</button>
+      </div>
+    </div>
+
+    <button class="calc-btn ht-btn" onclick="calcHT()">🔵 ANALYSER 1ère MI-TEMPS</button>
+
+    <div class="result-card" id="htResult">
+      <div class="ctx-badge" id="htCtxBadge"></div>
+      <div class="verdict" id="htVerdict"></div>
+      <div class="conf-wrap">
+        <div class="conf-label"><span>Confiance</span><span id="htConfPct">—</span></div>
+        <div class="conf-bar"><div class="conf-fill" id="htConfFill" style="width:0%"></div></div>
+      </div>
+      <div class="vol-banner" id="htVolBanner">
+        <div class="vol-banner-t">📉 VOLATILITÉ ÉLEVÉE</div>
+        <div id="htVolBannerText" style="font-size:12px;color:#ccc;"></div>
+      </div>
+      <div class="over-banner" id="htOverBanner">
+        <div class="over-banner-t">🚨 RISQUE OVER DÉTECTÉ</div>
+        <div id="htOverList"></div>
+      </div>
+      <div class="avgs-row">
+        <div class="avg-box" id="htBoxA">
+          <div class="al">Moy. A (1ère MT)</div>
+          <div class="av" id="htAvgA">—</div>
+          <div class="as">buts/1ère MT</div>
+        </div>
+        <div class="avg-box" id="htBoxB">
+          <div class="al">Moy. B (1ère MT)</div>
+          <div class="av" id="htAvgB">—</div>
+          <div class="as">buts/1ère MT</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="sl">Moy. combinée</div><div class="sv" id="htBase">—</div></div>
+        <div class="stat-box"><div class="sl">Total ajusté</div><div class="sv" id="htAdjusted">—</div></div>
+      </div>
+      <div class="line-sum">
+        <span class="ls1">Ligne</span>
+        <span class="ls2" style="color:#7C6FFF" id="htLineSummary">UNDER 1.5</span>
+        <span id="htMarge" style="font-size:12px;font-weight:500;">—</span>
+      </div>
+      <div class="method-info" style="border-color:rgba(124,111,255,0.15);background:rgba(124,111,255,0.04);">
+        <div class="method-t" style="color:#7C6FFF">🔬 MÉTHODE V6 — 1ère MT</div>
+        <div class="method-item">✅ Analyse spécifique 1ère mi-temps uniquement</div>
+        <div class="method-item">✅ Équipes souvent prudentes en début de match</div>
+        <div class="method-item">✅ Pondération récence identique à UNDER classique</div>
+        <div class="method-item">✅ Seuil de risque adapté au marché 1ère MT</div>
+      </div>
+      <button class="reset-btn" onclick="resetHT()">↺ Réinitialiser</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- TAB 3 — BTTS                       -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-btts">
+
+    <div class="instr" style="border-color:rgba(0,255,136,0.25);background:rgba(0,255,136,0.04);">
+      <strong style="color:var(--green)">📖 LES DEUX ÉQUIPES MARQUENT</strong>
+      <div style="margin-top:6px;font-size:12px;color:#aaa;">Pour chaque match, entre <b style="color:var(--green)">1</b> si l'équipe a marqué, <b style="color:var(--red)">0</b> si elle n'a pas marqué.</div>
+      <div class="instr-rows" style="margin-top:6px;">
+        <span><span class="instr-ex" style="color:var(--green);border-color:rgba(0,255,136,0.3);">2-0</span> → entre <b style="color:var(--green)">1</b></span>
+        <span><span class="instr-ex" style="color:var(--green);border-color:rgba(0,255,136,0.3);">0-0</span> → entre <b style="color:var(--red)">0</b></span>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:rgba(0,255,136,0.15);">
+      <div class="team-label" style="color:var(--green)">🎯 <span>ÉQUIPE A</span> <span class="team-sub">a-t-elle marqué ? (1=oui / 0=non)</span></div>
+      <div id="bttsRowsA"></div>
+      <div class="risk-box" id="bttsRiskA"></div>
+
+      <div class="team-separator" style="background:linear-gradient(90deg,transparent,rgba(0,255,136,0.12),transparent);"></div>
+
+      <div class="team-label" style="color:var(--green)">🎯 <span>ÉQUIPE B</span> <span class="team-sub">a-t-elle marqué ? (1=oui / 0=non)</span></div>
+      <div id="bttsRowsB"></div>
+      <div class="risk-box" id="bttsRiskB"></div>
+    </div>
+
+    <div class="card" style="border-color:rgba(0,255,136,0.15);">
+      <label class="field-label" style="color:var(--green)">🗂️ TYPE DE MATCH</label>
+      <select id="bttsType">
+        <option value="friendly">Match amical</option>
+        <option value="league" selected>Championnat</option>
+        <option value="derby">Derby / Rivalité</option>
+        <option value="cup">Coupe / Finale</option>
+        <option value="relegation">Match de relégation</option>
+      </select>
+      <label class="field-label" style="color:var(--green)">🏟️ LIEU</label>
+      <select id="bttsLieu">
+        <option value="home">Domicile (Équipe A)</option>
+        <option value="neutral" selected>Terrain neutre</option>
+        <option value="away">Extérieur (Équipe A)</option>
+      </select>
+    </div>
+
+    <button class="calc-btn btts-btn" onclick="calcBTTS()">🎯 ANALYSER BTTS</button>
+
+    <div class="result-card" id="bttsResult">
+      <div class="ctx-badge" id="bttsCtxBadge"></div>
+      <div class="btts-prob" id="bttsProb">—%</div>
+      <div class="btts-sub">Probabilité LES DEUX MARQUENT</div>
+
+      <div class="conf-wrap">
+        <div class="conf-label"><span>Confiance signal</span><span id="bttsConfPct">—</span></div>
+        <div class="conf-bar"><div class="conf-fill" id="bttsConfFill" style="width:0%"></div></div>
+      </div>
+
+      <div class="verdict" id="bttsVerdict"></div>
+
+      <div class="over-banner" id="bttsWarnBanner" style="border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.06);">
+        <div class="over-banner-t" style="color:var(--gold)">⚡ CONDITION BTTS</div>
+        <div id="bttsWarnList"></div>
+      </div>
+
+      <div class="btts-grid">
+        <div class="btts-item">
+          <div class="bil">Taux A marque</div>
+          <div class="biv" id="bttsRateA">—</div>
+        </div>
+        <div class="btts-item">
+          <div class="bil">Taux B marque</div>
+          <div class="biv" id="bttsRateB">—</div>
+        </div>
+        <div class="btts-item">
+          <div class="bil">Prob. BTTS OUI</div>
+          <div class="biv" id="bttsProbOui">—</div>
+        </div>
+        <div class="btts-item">
+          <div class="bil">Prob. BTTS NON</div>
+          <div class="biv" id="bttsProbNon">—</div>
+        </div>
+      </div>
+
+      <div class="method-info" style="border-color:rgba(0,255,136,0.12);background:rgba(0,255,136,0.03);">
+        <div class="method-t" style="color:var(--green)">🔬 MÉTHODE V6 — BTTS</div>
+        <div class="method-item">✅ Probabilité indépendante A × B</div>
+        <div class="method-item">✅ Pondération récence identique</div>
+        <div class="method-item">✅ Bonus si derby (les deux attaquent)</div>
+        <div class="method-item">✅ Malus si amical (équipes prudentes)</div>
+      </div>
+      <button class="reset-btn" onclick="resetBTTS()">↺ Réinitialiser</button>
+    </div>
+  </div>
+
+  <!-- ── HISTORIQUE ── -->
+  <div class="history-section" style="margin-top:8px;">
+    <div class="history-header">
+      <div class="history-title">📋 HISTORIQUE</div>
+      <button class="history-clear" onclick="clearHistory()">Effacer tout</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+/* ════════════════════════════════════
+   GLOBALS
+════════════════════════════════════ */
+const WEIGHTS = [1.5, 1.2, 1.0, 0.85, 0.7];
+let uLine = 2.5, htLine = 1.5;
+let history = [];
+
+// adj POSITIF = plus de buts attendus = défavorable UNDER
+// adj NÉGATIF = moins de buts attendus = favorable UNDER
+const TYPE_MAP = {
+  friendly:   { adj: +0.3, label: 'AMICAL',        cls: 'type-friendly' }, // défenses relâchées = plus de buts
+  league:     { adj:  0.0, label: 'CHAMPIONNAT',    cls: 'type-official' },
+  derby:      { adj: +0.2, label: 'DERBY',          cls: 'type-derby'    }, // tension = plus d'actions offensives
+  cup:        { adj: -0.1, label: 'COUPE',          cls: 'type-official' }, // enjeu défensif
+  relegation: { adj: +0.1, label: 'RELÉGATION',     cls: 'type-official' }, // équipes ouvertes
+  worldcup:   { adj:  0.0, label: 'COUPE DU MONDE', cls: 'type-official' }
+};
+
+/* ════════════════════════════════════
+   TAB SWITCH
+════════════════════════════════════ */
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+/* ════════════════════════════════════
+   BUILD ROWS
+════════════════════════════════════ */
+function buildRows(prefix, containerId, maxVal, placeholderText, accentColor) {
+  const cont = document.getElementById(containerId);
+  cont.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const row = document.createElement('div');
+    row.className = 'match-row';
+    row.id = `row-${prefix}${i}`;
+    row.innerHTML = `
+      <span class="mnum">${i}</span>
+      <div class="mscore">
+        <input type="number" min="0" max="${maxVal}" id="${prefix}${i}"
+          placeholder="${placeholderText}"
+          oninput="onLiveInput('${prefix}', ${i}, ${maxVal})"
+          style="border-bottom-color:${accentColor}33">
+        <div class="err-msg" id="err-${prefix}${i}"></div>
+      </div>
+      <span class="mwarn" id="w${prefix}${i}"></span>
+      <span class="mtag ${i===1?'recent':i===5?'old':''}">${i===1?'récent':i===5?'ancien':''}</span>`;
+    cont.appendChild(row);
+  }
+}
+
+function onLiveInput(prefix, idx, maxVal) {
+  const el = document.getElementById(prefix + idx);
+  const errEl = document.getElementById('err-' + prefix + idx);
+  const rowEl = document.getElementById('row-' + prefix + idx);
+  const v = el.value;
+  if (v === '') { errEl.classList.remove('show'); rowEl.classList.remove('has-error','has-warn'); return; }
+  const n = parseFloat(v);
+  if (n < 0) {
+    el.value = 0;
+    errEl.textContent = 'Valeur minimale : 0';
+    errEl.classList.add('show');
+    rowEl.classList.add('has-error');
+    return;
+  }
+  if (n > maxVal) {
+    errEl.textContent = `Maximum autorisé : ${maxVal}`;
+    errEl.classList.add('show');
+    rowEl.classList.add('has-error');
+    return;
+  }
+  errEl.classList.remove('show');
+  rowEl.classList.remove('has-error');
+  // aberrant
+  if (n >= 6) { document.getElementById('w'+prefix+idx).textContent = '⚠️'; rowEl.classList.add('has-warn'); }
+  else { document.getElementById('w'+prefix+idx).textContent = ''; rowEl.classList.remove('has-warn'); }
+  // live risk
+  updateLiveRisk(prefix);
+}
+
+function updateLiveRisk(prefix) {
+  const vals = getVals(prefix);
+  if (!vals.length) return;
+  const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+  // charts
+  updateChart(prefix, vals);
+}
+
+function updateChart(prefix, vals) {
+  // determine chart elements
+  let chartId, barsId;
+  if (prefix === 'ua') { chartId = 'uChartA'; barsId = 'uBarsA'; }
+  else if (prefix === 'ub') { chartId = 'uChartB'; barsId = 'uBarsB'; }
+  else if (prefix === 'hta') { chartId = 'htChartA'; barsId = 'htBarsA'; }
+  else if (prefix === 'htb') { chartId = 'htChartB'; barsId = 'htBarsB'; }
+  else return;
+  const chartEl = document.getElementById(chartId);
+  const barsEl = document.getElementById(barsId);
+  if (!chartEl || !barsEl) return;
+  if (vals.length < 2) { chartEl.style.display = 'none'; return; }
+  chartEl.style.display = 'block';
+  const maxV = Math.max(...vals, 1);
+  barsEl.innerHTML = vals.map((v, i) => {
+    const h = Math.round((v / maxV) * 36);
+    const col = v >= 4 ? '#FF4444' : v >= 2.5 ? '#FF9500' : '#00FF88';
+    return `<div class="bar-wrap"><div class="bar" style="height:${h}px;background:${col};"></div><div class="bar-val">${v}</div></div>`;
+  }).join('');
+}
+
+function getVals(prefix) {
+  const vals = [];
+  for (let i = 1; i <= 5; i++) {
+    const v = document.getElementById(prefix + i)?.value;
+    if (v !== '' && v !== undefined && v !== null) vals.push(parseFloat(v));
+  }
+  return vals;
+}
+
+/* ════════════════════════════════════
+   STATS UTILS
+════════════════════════════════════ */
+function getWeightedAvg(prefix) {
+  let wSum = 0, wTotal = 0, aberrants = [], rawVals = [];
+  for (let i = 1; i <= 5; i++) {
+    const v = document.getElementById(prefix + i)?.value;
+    if (v === '' || v === undefined) continue;
+    let val = parseFloat(v), w = WEIGHTS[i-1];
+    rawVals.push(val);
+    if (val >= 6) { aberrants.push({match: i, val}); val = 5; wSum += val*w*0.5; wTotal += w*0.5; }
+    else { wSum += val*w; wTotal += w; }
+  }
+  const avg = wTotal === 0 ? null : wSum / wTotal;
+  const stdDev = rawVals.length >= 2 ? calcStdDev(rawVals) : null;
+  return { avg, aberrants, rawVals, stdDev };
+}
+
+function calcStdDev(arr) {
+  const mean = arr.reduce((a,b)=>a+b,0)/arr.length;
+  return Math.sqrt(arr.reduce((a,b)=>a+Math.pow(b-mean,2),0)/arr.length);
+}
+
+function getVolLabel(std) {
+  if (std < 0.8) return { label: 'Régulière',        color: '#00FF88', penaltyFactor: 0  };
+  if (std < 1.5) return { label: 'Modérée',           color: '#FFD700', penaltyFactor: 8  };
+  return          { label: 'Très irrégulière',        color: '#FF4444', penaltyFactor: 16 };
+}
+
+function getCtxAdj(typeKey) {
+  return TYPE_MAP[typeKey]?.adj ?? 0;
+}
+
+function confColor(conf) {
+  if (conf >= 75) return '#00FF88';
+  if (conf >= 55) return '#FFD700';
+  if (conf >= 38) return '#FF9500';
+  return '#FF4444';
+}
+
+/* ════════════════════════════════════
+   UNDER CLASSIQUE
+════════════════════════════════════ */
+function uSelectLine(btn) {
+  document.querySelectorAll('.tab-btn[data-tab="under"] ~ * .line-btn, #tab-under .line-btn').forEach(b => { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  uLine = parseFloat(btn.dataset.line);
+}
+
+function calcUnder() {
+  const rA = getWeightedAvg('ua');
+  const rB = getWeightedAvg('ub');
+  if (!rA.avg || !rB.avg) { alert('Entre au moins 1 match par équipe !'); return; }
+
+  const typeKey = document.getElementById('uType').value;
+  const lieu = parseFloat(document.getElementById('uLieu').value);
+  const niv = parseFloat(document.getElementById('uNiveau').value);
+  const ctxAdj = getCtxAdj(typeKey);
+
+  const base = (rA.avg + rB.avg) / 2;
+  const adjusted = base + ctxAdj + lieu + niv;
+
+  // volatilité — pénalité directe sur la confiance (pas sur eff)
+  const volA = rA.stdDev ? getVolLabel(rA.stdDev) : null;
+  const volB = rB.stdDev ? getVolLabel(rB.stdDev) : null;
+
+  // over risks
+  const overRisks = [];
+  if (rA.avg >= 3.0) overRisks.push('🚨 Équipe A très offensive : '+rA.avg.toFixed(2)+' buts/match');
+  else if (rA.avg >= 2.5) overRisks.push('⚠️ Équipe A offensive : '+rA.avg.toFixed(2)+' buts/match');
+  if (rB.avg >= 3.0) overRisks.push('🚨 Équipe B très offensive : '+rB.avg.toFixed(2)+' buts/match');
+  else if (rB.avg >= 2.5) overRisks.push('⚠️ Équipe B offensive : '+rB.avg.toFixed(2)+' buts/match');
+
+  const aberrants = [
+    ...rA.aberrants.map(a => `Équipe A Match ${a.match} : ${a.val} buts → réduit à 5`),
+    ...rB.aberrants.map(a => `Équipe B Match ${a.match} : ${a.val} buts → réduit à 5`)
+  ];
+  if (niv < 0) aberrants.push('Adversaires faibles → stats peut-être gonflées');
+
+  // pénalité sur la marge nette (en buts)
+  let pen = overRisks.length * 0.3 + aberrants.length * 0.1 + (niv < 0 ? 0.15 : 0);
+  const margebrute = uLine - adjusted;
+  const eff = margebrute - pen;
+
+  // scenario
+  let scenarioType = null;
+  if (rA.avg <= 1.2 && rB.avg <= 1.2) scenarioType = 'under';
+  else if (rA.avg >= 2.8 && rB.avg >= 2.8) scenarioType = 'over';
+
+  // verdict basé sur eff (marge nette en buts)
+  let verdict, color, conf;
+  if (eff >= 1.0)      { verdict = '✅ UNDER SOLIDE';   color = '#00FF88'; conf = Math.min(90, 60 + eff*8); }
+  else if (eff >= 0.5) { verdict = '🟡 UNDER PROBABLE'; color = '#FFD700'; conf = Math.min(68, 45 + eff*8); }
+  else if (eff >= 0.1) { verdict = '⚠️ UNDER LIMITE';  color = '#FF9500'; conf = 34; }
+  else                 { verdict = '❌ OVER PROBABLE';  color = '#FF4444'; conf = Math.max(8, 28 + eff*7); }
+
+  // pénalité volatilité sur la confiance (forte impact)
+  const volPenConf = (volA?.penaltyFactor||0) + (volB?.penaltyFactor||0);
+  conf = Math.max(8, conf - volPenConf);
+
+  // Render
+  const rc = document.getElementById('uResult');
+  rc.style.display = 'block'; rc.style.border = `2px solid ${color}44`;
+
+  const tm = TYPE_MAP[typeKey];
+  document.getElementById('uCtxBadge').textContent = tm.label;
+  document.getElementById('uCtxBadge').className = `ctx-badge ${tm.cls}`;
+
+  document.getElementById('uVerdict').textContent = verdict;
+  document.getElementById('uVerdict').style.color = color;
+
+  const cp = Math.round(conf);
+  document.getElementById('uConfPct').textContent = cp + '%';
+  document.getElementById('uConfFill').style.width = cp + '%';
+  document.getElementById('uConfFill').style.background = confColor(cp);
+
+  // scenario box
+  const sb = document.getElementById('uScenario');
+  const st = document.getElementById('uScenarioT');
+  const sd = document.getElementById('uScenarioD');
+  if (scenarioType === 'under') {
+    sb.style.display = 'block'; sb.style.background = 'rgba(0,255,136,0.07)'; sb.style.border = '1px solid rgba(0,255,136,0.25)';
+    st.textContent = '🔒 PROFIL ULTRA-UNDER'; st.style.color = '#00FF88';
+    sd.textContent = 'Les deux équipes marquent en moyenne ≤1.2 but/match. Signal under extrêmement favorable.';
+  } else if (scenarioType === 'over') {
+    sb.style.display = 'block'; sb.style.background = 'rgba(255,68,68,0.07)'; sb.style.border = '1px solid rgba(255,68,68,0.25)';
+    st.textContent = '🔥 PROFIL OVER FORT'; st.style.color = '#FF4444';
+    sd.textContent = 'Les deux équipes marquent en moyenne ≥2.8 buts/match. Extrême prudence sur les paris under.';
+  } else {
+    sb.style.display = 'none';
+  }
+
+  // vol banner
+  const vb = document.getElementById('uVolBanner');
+  const volWarnings = [];
+  if (volA && volA.penaltyFactor > 0) volWarnings.push(`Équipe A : ${volA.label} (σ=${rA.stdDev.toFixed(2)})`);
+  if (volB && volB.penaltyFactor > 0) volWarnings.push(`Équipe B : ${volB.label} (σ=${rB.stdDev.toFixed(2)})`);
+  if (volWarnings.length) { vb.style.display = 'block'; document.getElementById('uVolBannerText').innerHTML = volWarnings.map(w=>`<div class="alert-item">${w}</div>`).join(''); }
+  else vb.style.display = 'none';
+
+  // over banner
+  const ob = document.getElementById('uOverBanner');
+  if (overRisks.length) { document.getElementById('uOverList').innerHTML = overRisks.map(r=>`<div class="over-item">${r}</div>`).join(''); ob.style.display = 'block'; }
+  else ob.style.display = 'none';
+
+  // avg boxes
+  setAvgBox('uAvgA','uBoxA', rA.avg);
+  setAvgBox('uAvgB','uBoxB', rB.avg);
+
+  document.getElementById('uBase').textContent = base.toFixed(2) + ' buts';
+  document.getElementById('uAdjusted').textContent = adjusted.toFixed(2) + ' buts';
+  document.getElementById('uStdA').textContent = rA.stdDev ? rA.stdDev.toFixed(2) : '—';
+  document.getElementById('uStdB').textContent = rB.stdDev ? rB.stdDev.toFixed(2) : '—';
+
+  document.getElementById('uLineSummary').textContent = 'UNDER ' + uLine;
+  const m = uLine - adjusted;
+  document.getElementById('uMarge').textContent = 'Marge: ' + (m>=0?'+':'') + m.toFixed(2);
+  document.getElementById('uMarge').style.color = color;
+
+  const ab = document.getElementById('uAlerts');
+  if (aberrants.length) { document.getElementById('uAlertsList').innerHTML = aberrants.map(a=>`<div class="alert-item">${a}</div>`).join(''); ab.style.display = 'block'; }
+  else ab.style.display = 'none';
+
+  rc.scrollIntoView({behavior:'smooth', block:'start'});
+
+  addHistory({ market: `UNDER ${uLine}`, type: tm.label, verdict, conf: cp, color });
+}
+
+function setAvgBox(valId, boxId, avg) {
+  const el = document.getElementById(valId);
+  const box = document.getElementById(boxId);
+  el.textContent = avg.toFixed(2);
+  if (avg >= 3) { el.style.color = '#FF4444'; box.style.background = 'rgba(255,68,68,0.07)'; box.style.border = '1px solid rgba(255,68,68,0.25)'; }
+  else if (avg >= 2.5) { el.style.color = '#FF9500'; box.style.background = 'rgba(255,100,0,0.06)'; box.style.border = '1px solid rgba(255,100,0,0.2)'; }
+  else { el.style.color = '#fff'; box.style.background = 'rgba(255,255,255,0.04)'; box.style.border = 'none'; }
+}
+
+function resetUnder() {
+  for (let i=1;i<=5;i++) ['ua','ub'].forEach(p => {
+    const e=document.getElementById(p+i); if(e){e.value=''; e.style.borderBottom='1px solid rgba(255,215,0,0.25)';}
+    const w=document.getElementById('w'+p+i); if(w) w.textContent='';
+    const er=document.getElementById('err-'+p+i); if(er) er.classList.remove('show');
+    const ro=document.getElementById('row-'+p+i); if(ro) ro.classList.remove('has-error','has-warn');
+  });
+  ['uChartA','uChartB'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  document.getElementById('uResult').style.display='none';
+}
+
+/* ════════════════════════════════════
+   UNDER 1.5 1ère MT
+════════════════════════════════════ */
+function htSelectLine(btn) {
+  document.querySelectorAll('#tab-ht .line-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  htLine = parseFloat(btn.dataset.line);
+}
+
+function calcHT() {
+  const rA = getWeightedAvg('hta');
+  const rB = getWeightedAvg('htb');
+  if (!rA.avg || !rB.avg) { alert('Entre au moins 1 match par équipe !'); return; }
+
+  const typeKey = document.getElementById('htType').value;
+  const lieu = parseFloat(document.getElementById('htLieu').value);
+  const ctxAdj = getCtxAdj(typeKey) * 0.6; // impact réduit en 1ère MT
+
+  const base = (rA.avg + rB.avg) / 2;
+  const adjusted = base + ctxAdj + lieu;
+
+  const overRisks = [];
+  if (rA.avg >= 0.9) overRisks.push(`⚠️ Équipe A active en 1ère MT : ${rA.avg.toFixed(2)} buts`);
+  if (rB.avg >= 0.9) overRisks.push(`⚠️ Équipe B active en 1ère MT : ${rB.avg.toFixed(2)} buts`);
+
+  const eff = (htLine - adjusted);
+  let verdict, color, conf;
+  if (eff >= 0.8)      { verdict = '✅ UNDER 1ère MT SOLIDE'; color = '#7C6FFF'; conf = Math.min(92, 65+eff*10); }
+  else if (eff >= 0.3) { verdict = '🟡 UNDER 1ère MT PROBABLE'; color = '#a090ff'; conf = Math.min(70, 50+eff*10); }
+  else if (eff >= 0)   { verdict = '⚠️ UNDER 1ère MT LIMITE'; color = '#FF9500'; conf = 36; }
+  else                 { verdict = '❌ OVER 1ère MT PROBABLE'; color = '#FF4444'; conf = Math.max(10, 30+eff*8); }
+
+  const rc = document.getElementById('htResult');
+  rc.style.display = 'block'; rc.style.border = `2px solid ${color}44`;
+
+  const tm = TYPE_MAP[typeKey];
+  document.getElementById('htCtxBadge').textContent = tm.label;
+  document.getElementById('htCtxBadge').className = `ctx-badge ${tm.cls}`;
+
+  document.getElementById('htVerdict').textContent = verdict;
+  document.getElementById('htVerdict').style.color = color;
+
+  const cp = Math.round(conf);
+  document.getElementById('htConfPct').textContent = cp + '%';
+  document.getElementById('htConfFill').style.width = cp + '%';
+  document.getElementById('htConfFill').style.background = color;
+
+  const ob = document.getElementById('htOverBanner');
+  if (overRisks.length) { document.getElementById('htOverList').innerHTML = overRisks.map(r=>`<div class="over-item">${r}</div>`).join(''); ob.style.display='block'; }
+  else ob.style.display='none';
+
+  setAvgBox('htAvgA','htBoxA',rA.avg);
+  setAvgBox('htAvgB','htBoxB',rB.avg);
+  document.getElementById('htBase').textContent = base.toFixed(2) + ' buts';
+  document.getElementById('htAdjusted').textContent = adjusted.toFixed(2) + ' buts';
+  document.getElementById('htLineSummary').textContent = 'UNDER ' + htLine + ' (1ère MT)';
+  const m = htLine - adjusted;
+  document.getElementById('htMarge').textContent = 'Marge: '+(m>=0?'+':'')+m.toFixed(2);
+  document.getElementById('htMarge').style.color = color;
+
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
+  addHistory({ market: `UNDER ${htLine} 1ère MT`, type: tm.label, verdict, conf: cp, color });
+}
+
+function resetHT() {
+  for(let i=1;i<=5;i++) ['hta','htb'].forEach(p=>{
+    const e=document.getElementById(p+i); if(e) e.value='';
+    const er=document.getElementById('err-'+p+i); if(er) er.classList.remove('show');
+    const ro=document.getElementById('row-'+p+i); if(ro) ro.classList.remove('has-error','has-warn');
+  });
+  ['htChartA','htChartB'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  document.getElementById('htResult').style.display='none';
+}
+
+/* ════════════════════════════════════
+   BTTS
+════════════════════════════════════ */
+function calcBTTS() {
+  const rA = getWeightedAvg('bttsa');
+  const rB = getWeightedAvg('bttsb');
+  if (!rA.avg || !rB.avg) { alert('Entre au moins 1 match par équipe !'); return; }
+
+  const typeKey = document.getElementById('bttsType').value;
+  const lieu = document.getElementById('bttsLieu').value;
+
+  // Probabilité que chaque équipe marque (avg ici = taux 0-1 pondéré)
+  let pA = Math.min(rA.avg, 1);
+  let pB = Math.min(rB.avg, 1);
+
+  // adjustments
+  if (typeKey === 'derby') { pA = Math.min(1, pA + 0.05); pB = Math.min(1, pB + 0.05); }
+  if (typeKey === 'friendly') { pA = Math.max(0, pA - 0.05); pB = Math.max(0, pB - 0.05); }
+  if (lieu === 'home') pA = Math.min(1, pA + 0.04);
+  if (lieu === 'away') pA = Math.max(0, pA - 0.04);
+
+  const pBTTS = pA * pB;
+  const pNoBTTS = 1 - pBTTS;
+
+  let verdict, color, conf;
+  if (pBTTS >= 0.65)       { verdict = '✅ BTTS OUI SOLIDE'; color = '#00FF88'; conf = Math.min(90, 60+pBTTS*40); }
+  else if (pBTTS >= 0.50)  { verdict = '🟡 BTTS OUI PROBABLE'; color = '#FFD700'; conf = Math.min(68, 40+pBTTS*40); }
+  else if (pBTTS >= 0.35)  { verdict = '⚠️ BTTS INCERTAIN'; color = '#FF9500'; conf = 38; }
+  else                     { verdict = '❌ BTTS NON PROBABLE'; color = '#FF4444'; conf = Math.max(15, 20+pBTTS*30); }
+
+  const rc = document.getElementById('bttsResult');
+  rc.style.display = 'block'; rc.style.border = `2px solid ${color}44`;
+
+  const tm = TYPE_MAP[typeKey];
+  document.getElementById('bttsCtxBadge').textContent = tm.label;
+  document.getElementById('bttsCtxBadge').className = `ctx-badge ${tm.cls}`;
+
+  document.getElementById('bttsProb').textContent = Math.round(pBTTS*100) + '%';
+  document.getElementById('bttsProb').style.color = color;
+  document.getElementById('bttsVerdict').textContent = verdict;
+  document.getElementById('bttsVerdict').style.color = color;
+
+  const cp = Math.round(conf);
+  document.getElementById('bttsConfPct').textContent = cp + '%';
+  document.getElementById('bttsConfFill').style.width = cp + '%';
+  document.getElementById('bttsConfFill').style.background = color;
+
+  // conditions
+  const warns = [];
+  if (pA < 0.5) warns.push(`⚠️ Équipe A marque dans seulement ${Math.round(pA*100)}% des matchs`);
+  if (pB < 0.5) warns.push(`⚠️ Équipe B marque dans seulement ${Math.round(pB*100)}% des matchs`);
+  if (pA >= 0.8) warns.push(`✅ Équipe A très régulière : marque dans ${Math.round(pA*100)}% des matchs`);
+  if (pB >= 0.8) warns.push(`✅ Équipe B très régulière : marque dans ${Math.round(pB*100)}% des matchs`);
+  const wb = document.getElementById('bttsWarnBanner');
+  if (warns.length) { document.getElementById('bttsWarnList').innerHTML = warns.map(w=>`<div class="over-item" style="color:#ccc">${w}</div>`).join(''); wb.style.display='block'; }
+  else wb.style.display='none';
+
+  document.getElementById('bttsRateA').textContent = Math.round(pA*100) + '%';
+  document.getElementById('bttsRateA').style.color = pA>=0.7?'#00FF88':pA>=0.4?'#FFD700':'#FF4444';
+  document.getElementById('bttsRateB').textContent = Math.round(pB*100) + '%';
+  document.getElementById('bttsRateB').style.color = pB>=0.7?'#00FF88':pB>=0.4?'#FFD700':'#FF4444';
+  document.getElementById('bttsProbOui').textContent = Math.round(pBTTS*100) + '%';
+  document.getElementById('bttsProbOui').style.color = color;
+  document.getElementById('bttsProbNon').textContent = Math.round(pNoBTTS*100) + '%';
+  document.getElementById('bttsProbNon').style.color = '#888';
+
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
+  addHistory({ market: 'BTTS', type: tm.label, verdict, conf: cp, color });
+}
+
+function resetBTTS() {
+  for(let i=1;i<=5;i++) ['bttsa','bttsb'].forEach(p=>{
+    const e=document.getElementById(p+i); if(e) e.value='';
+    const ro=document.getElementById('row-'+p+i); if(ro) ro.classList.remove('has-error','has-warn');
+  });
+  document.getElementById('bttsResult').style.display='none';
+}
+
+/* ════════════════════════════════════
+   HISTORY
+════════════════════════════════════ */
+function addHistory(item) {
+  history.unshift({...item, time: new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) });
+  if (history.length > 10) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const cont = document.getElementById('historyList');
+  if (!history.length) { cont.innerHTML = '<div class="history-empty">Aucune analyse pour l\'instant</div>'; return; }
+  cont.innerHTML = history.map(h => `
+    <div class="history-item" style="border-left-color:${h.color}">
+      <div class="hi-left">
+        <div class="hi-match">${h.market} · ${h.type}</div>
+        <div class="hi-market">${h.time}</div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-verdict" style="color:${h.color}">${h.verdict}</div>
+        <div class="hi-conf">${h.conf}%</div>
+      </div>
+    </div>`).join('');
+}
+
+function clearHistory() { history=[]; renderHistory(); }
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+function init() {
+  buildRows('ua',  'uRowsA',  12, 'Total buts', '#FFD700');
+  buildRows('ub',  'uRowsB',  12, 'Total buts', '#FFD700');
+  buildRows('hta', 'htRowsA', 6,  'Buts 1ère MT', '#7C6FFF');
+  buildRows('htb', 'htRowsB', 6,  'Buts 1ère MT', '#7C6FFF');
+  buildRows('bttsa','bttsRowsA', 1, '1 = oui / 0 = non', '#00FF88');
+  buildRows('bttsb','bttsRowsB', 1, '1 = oui / 0 = non', '#00FF88');
+
+  // select default lines
+  document.querySelector('#tab-under .line-btn[data-line="2.5"]').classList.add('sel');
+  document.querySelector('#tab-ht .line-btn[data-line="1.5"]').classList.add('sel');
+
+  renderHistory();
+}
+
+init();
+</script>
+</body>
+</html>
